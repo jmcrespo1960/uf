@@ -72,14 +72,30 @@
             }
         });
 
-        // Opcional: inicializar con algunos valores de ejemplo
-        document.getElementById('uf-lista').value = `1A,1
-1B,2
-1C,3
-2A,21
-2B,22
-9P,274
-20T,400`;
+        // Secuencia de letras a usar
+        const letras  = ['B','A','T','S','C','H','N','R','J','L','D','Q','G','I','K','M','E','P','F','O'];
+        const letras8 = ['B','A','T','S','C','N','R','J','L','D','Q','I','K','M','E','P','F','O'];
+
+        // Generar lista automáticamente desde UF 4
+        let lista = '';
+        let uf = 4;
+        for (let piso = 1; piso <= 7; piso++) {
+            for (let i = 0; i < letras.length; i++) {
+                lista += `${piso}${letras[i]},${uf++}\n`;
+            }
+        }
+        for (let i = 0; i < letras8.length; i++) {
+            lista += `8${letras8[i]},${uf++}\n`;
+        }
+        for (let piso = 9; piso <= 20; piso++) {
+            for (let i = 0; i < letras.length; i++) {
+                lista += `${piso}${letras[i]},${uf++}\n`;
+            }
+        }
+        // Eliminar salto de línea final si existe
+        lista = lista.trim();
+
+        document.getElementById('uf-lista').value = lista;
         cargarListaDesdeTextarea();
     </script>
 </body>
