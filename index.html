@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Unidad Funcional</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        form { margin-bottom: 1em; }
+        label { display: block; margin-top: 1em; }
+        input[type="text"] { width: 80px; }
+        #resultado { margin-top: 1em; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Buscar Unidad Funcional</h1>
+    <form id="form-uf">
+        <label>
+            Departamento (ejemplo: 1A, 15C, 20T):
+            <input type="text" id="departamento" required pattern="^\d{1,2}[A-Ta-t]$" maxlength="3">
+        </label>
+        <button type="submit">Buscar</button>
+    </form>
+    <div id="resultado"></div>
+
+    <script>
+        // Generar lista interna de asociaciones automáticamente
+        // Ejemplo: { departamento: "1A", uf: 1 }, ..., { departamento: "20T", uf: 400 }
+        const unidadesFuncionales = [];
+        let uf = 1;
+        for (let piso = 1; piso <= 20; piso++) {
+            for (let i = 0; i < 20; i++) { // Letras de la A a la T
+                const letra = String.fromCharCode(65 + i); // 65 = 'A'
+                const departamento = `${piso}${letra}`;
+                unidadesFuncionales.push({
+                    departamento: departamento,
+                    uf: uf++
+                });
+            }
+        }
+
+        document.getElementById('form-uf').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const departamentoInput = document.getElementById('departamento').value.trim().toUpperCase();
+
+            const resultado = unidadesFuncionales.find(
+                uf => uf.departamento === departamentoInput
+            );
+
+            const divResultado = document.getElementById('resultado');
+            if (resultado) {
+                divResultado.textContent = `La unidad funcional asociada es: ${resultado.uf}`;
+            } else {
+                divResultado.textContent = 'No se encontró una unidad funcional para ese departamento.';
+            }
+        });
+    </script>
+</body>
+</html>
