@@ -7,17 +7,17 @@
         body { font-family: Arial, sans-serif; margin: 2em; }
         form { margin-bottom: 1em; }
         label { display: block; margin-top: 1em; }
-        input[type="text"] { width: 80px; }
+        input[type="text"], input[type="number"] { width: 120px; }
         #resultado { margin-top: 1em; font-weight: bold; }
         textarea { width: 100%; height: 120px; margin-top: 1em; }
     </style>
 </head>
 <body>
-    <h1>Buscar Unidad Funcional</h1>
+    <h1>Buscar Unidad Funcional o Departamento</h1>
     <form id="form-uf">
         <label>
-            Departamento (ejemplo: 1A, 15C, 20T):
-            <input type="text" id="departamento" required pattern="^\d{1,2}[A-Ta-t]$" maxlength="3">
+            Ingrese Departamento (ej: 1A, 15C, 20T) <b>o</b> Unidad Funcional (ej: 4, 120, 400):
+            <input type="text" id="departamento" required maxlength="5" pattern="^\d{1,2}[A-Za-z]$|^\d{1,4}$">
         </label>
         <button type="submit">Buscar</button>
     </form>
@@ -55,20 +55,34 @@
             document.getElementById('resultado').textContent = 'Lista actualizada correctamente.';
         });
 
-        // Buscar unidad funcional
+        // Buscar unidad funcional o departamento
         document.getElementById('form-uf').addEventListener('submit', function(e) {
             e.preventDefault();
-            const departamentoInput = document.getElementById('departamento').value.trim().toUpperCase();
+            const input = document.getElementById('departamento').value.trim().toUpperCase();
 
-            const resultado = unidadesFuncionales.find(
-                uf => uf.departamento === departamentoInput
+            // Buscar como departamento
+            let resultado = unidadesFuncionales.find(
+                uf => uf.departamento === input
             );
 
             const divResultado = document.getElementById('resultado');
             if (resultado) {
                 divResultado.textContent = `La unidad funcional asociada es: ${resultado.uf}`;
             } else {
-                divResultado.textContent = 'No se encontró una unidad funcional para ese departamento.';
+                // Buscar como unidad funcional (número)
+                const ufNum = parseInt(input, 10);
+                if (!isNaN(ufNum)) {
+                    resultado = unidadesFuncionales.find(
+                        uf => uf.uf === ufNum
+                    );
+                    if (resultado) {
+                        divResultado.textContent = `El departamento asociado es: ${resultado.departamento}`;
+                    } else {
+                        divResultado.textContent = 'No se encontró una unidad funcional ni un departamento asociado a ese valor.';
+                    }
+                } else {
+                    divResultado.textContent = 'No se encontró una unidad funcional ni un departamento asociado a ese valor.';
+                }
             }
         });
 
